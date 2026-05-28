@@ -1,7 +1,7 @@
 <div align="center">
   <div>
     <img
-    src="https://github.com/LeagueAkari/LeagueAkari/raw/HEAD/pictures/logo.png"
+    src="https://github.com/kheyrozt-ctrl/League-akali-kheyro/raw/HEAD/pictures/logo.png"
     width="128"
     height="128"
     />
@@ -10,11 +10,11 @@
 </div>
 
 <p align="center">
-    <a href="https://github.com/LeagueAkari/LeagueAkari/releases"><img src="https://img.shields.io/github/release/LeagueAkari/LeagueAkari.svg?style=flat-square&maxAge=600" alt="Downloads"></a>
-    <a href="https://github.com/LeagueAkari/LeagueAkari/releases">
-    <img src="https://img.shields.io/github/downloads/LeagueAkari/LeagueAkari/total?style=flat&label=Downloads"></a>
-    <a href="https://github.com/LeagueAkari/LeagueAkari/stargazers">
-    <img src="https://img.shields.io/github/stars/LeagueAkari/LeagueAkari?style=flat&label=Stars">
+    <a href="https://github.com/kheyrozt-ctrl/League-akali-kheyro/releases"><img src="https://img.shields.io/github/release/kheyrozt-ctrl/League-akali-kheyro.svg?style=flat-square&maxAge=600" alt="Downloads"></a>
+    <a href="https://github.com/kheyrozt-ctrl/League-akali-kheyro/releases">
+    <img src="https://img.shields.io/github/downloads/kheyrozt-ctrl/League-akali-kheyro/total?style=flat&label=Downloads"></a>
+    <a href="https://github.com/kheyrozt-ctrl/League-akali-kheyro/stargazers">
+    <img src="https://img.shields.io/github/stars/kheyrozt-ctrl/League-akali-kheyro?style=flat&label=Stars">
   </a>
 </p>
 
@@ -100,4 +100,4 @@ Additionally, **this application is not officially supported or endorsed by Riot
 
 This disclaimer is intended to provide transparency and enable users to make informed decisions. Thank you for your understanding, and please ensure fair play in the gaming environment.
 
-[![Star History Chart](https://api.star-history.com/svg?repos=LeagueAkari/LeagueAkari&type=Date)](https://star-history.com/#LeagueAkari/LeagueAkari&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=kheyrozt-ctrl/League-akali-kheyro&type=Date)](https://star-history.com/#kheyrozt-ctrl/League-akali-kheyro&Date)

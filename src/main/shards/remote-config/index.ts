@@ -88,7 +88,8 @@ export class RemoteConfigMain implements IAkariShardInitDispose {
     let detailedChangelog: string | null = null
     try {
       const { data } = await this.repo.getRawContent(
-        `/releases/${release.tag_name}/${this._app.settings.locale}.md`
+        `/releases/${release.tag_name}/${this._app.settings.locale}.md`,
+        'akari'
       )
 
       detailedChangelog = data

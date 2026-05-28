@@ -20,8 +20,13 @@ export interface InGameSendTemplateCatalog {
   }>
 }
 
+const CONFIG_REPO_OWNER = 'LeagueAkari'
+const CONFIG_REPO_NAME = 'LeagueAkari-Config'
+const APP_REPO_OWNER = 'kheyrozt-ctrl'
+const APP_REPO_NAME = 'League-akali-kheyro'
+
 /**
- * 连接到 LeagueAkari/LeagueAkari-Config 或 LeagueAkari/LeagueAkari 仓库
+ * 连接到远程配置仓库或当前应用仓库。
  */
 export class RemoteGitRepository {
   private _config = {
@@ -48,13 +53,18 @@ export class RemoteGitRepository {
       uri = uri.slice(1)
     }
 
-    const r = repo === 'akari-config' ? 'LeagueAkari-Config' : 'LeagueAkari'
+    const owner = repo === 'akari-config' ? CONFIG_REPO_OWNER : APP_REPO_OWNER
+    const r = repo === 'akari-config' ? CONFIG_REPO_NAME : APP_REPO_NAME
 
-    if (this._config.source === 'github') {
-      return `https://api.github.com/repos/LeagueAkari/${r}/${uri}`
+    if (repo === 'akari') {
+      return `https://api.github.com/repos/${owner}/${r}/${uri}`
     }
 
-    return `https://gitee.com/api/v5/repos/LeagueAkari/${r}/${uri}`
+    if (this._config.source === 'github') {
+      return `https://api.github.com/repos/${owner}/${r}/${uri}`
+    }
+
+    return `https://gitee.com/api/v5/repos/${owner}/${r}/${uri}`
   }
 
   private _rawContentUrl(
@@ -66,13 +76,18 @@ export class RemoteGitRepository {
       uri = uri.slice(1)
     }
 
-    const r = repo === 'akari-config' ? 'LeagueAkari-Config' : 'LeagueAkari'
+    const owner = repo === 'akari-config' ? CONFIG_REPO_OWNER : APP_REPO_OWNER
+    const r = repo === 'akari-config' ? CONFIG_REPO_NAME : APP_REPO_NAME
 
-    if (this._config.source === 'github') {
-      return `https://raw.githubusercontent.com/LeagueAkari/${r}/refs/heads/${branch}/${uri}`
+    if (repo === 'akari') {
+      return `https://raw.githubusercontent.com/${owner}/${r}/refs/heads/${branch}/${uri}`
     }
 
-    return `https://gitee.com/LeagueAkari/${r}/raw/${branch}/${uri}`
+    if (this._config.source === 'github') {
+      return `https://raw.githubusercontent.com/${owner}/${r}/refs/heads/${branch}/${uri}`
+    }
+
+    return `https://gitee.com/${owner}/${r}/raw/${branch}/${uri}`
   }
 
   setConfig(config: Partial<RemoteConfigRepositoryConfig>) {
