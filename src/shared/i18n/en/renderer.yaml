@@ -1949,6 +1949,13 @@ Opgg:
 
   tiers:
     all: 'All Tiers'
+    iron: 'Iron'
+    bronze: 'Bronze'
+    silver: 'Silver'
+    gold: 'Gold'
+    platinum: 'Platinum'
+    emerald: 'Emerald'
+    diamond: 'Diamond'
     ibsg: 'Gold -'
     gold_plus: 'Gold +'
     platinum_plus: 'Platinum +'
@@ -1958,6 +1965,52 @@ Opgg:
     master_plus: 'Master +'
     grandmaster: 'Grandmaster'
     challenger: 'Challenger'
+
+  draft:
+    enemyCandidates: Enemy Picks
+    enemyTempo: Enemy Tempo
+    allyPicks: Ally Picks
+    allyTempo: Ally Tempo
+    recommendations: Recommendations
+    collapseList: Collapse full list
+    expandList: Expand full list
+    loadingMatchups: Loading full matchup data...
+    loadingSynergies: Loading team synergy data...
+    noRecommendations: No recommendation data available
+    unselected: '{{position}} unselected'
+    recommendationTitle: '{{champion}} win rate {{winRate}}%, mastery {{mastery}}'
+    pickRate: 'pick rate {{value}}%'
+    phaseBreakdown: 'Early {{early}}%, Mid {{mid}}%, Late {{late}}%'
+    soloRecommendations: Solo Recommendations
+    teamRecommendations: 'Team Recommendations ({{label}})'
+    basedOnMatchup: 'Based on matchup vs {{champion}}'
+    basedOnTier: Based on current role T0/T1
+    basedOnSynergyCount: 'Based on {{count}} relevant allied synergy picks'
+    selectChampion: 'Select {{champion}}'
+    viewDetails: View Details
+    notInChampSelect: Not currently in champion select
+    championUnavailable: This champion is not currently selectable
+    noPickAction: No executable pick action is available
+    mockSelected: 'Mock selected {{champion}}'
+    selected: 'Selected {{champion}}'
+    selectFailed: 'Selection failed: {{reason}}'
+    phases:
+      early: Early Game Comp
+      mid: Mid Game Comp
+      late: Late Game Comp
+      balanced: Balanced Comp
+    phaseShort:
+      early: E
+      mid: M
+      late: L
+      balanced: B
+    synergyLabels:
+      top: Top-Jungle
+      jungle: Jungle-Mid-Top
+      mid: Mid-Jungle
+      adc: Bot-Support
+      support: Support-ADC
+      team: Team
 
 OpggTier:
   searchPlaceholder: Search for name

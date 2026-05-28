@@ -100,7 +100,7 @@
       <div class="panel-section enemy-section">
         <div class="champ-select-side-rows">
           <div class="champ-select-side-row">
-            <div class="side-row-title">敌方候选</div>
+            <div class="side-row-title">{{ t('Opgg.draft.enemyCandidates') }}</div>
             <div class="enemy-list">
               <div
                 class="enemy-item"
@@ -119,7 +119,9 @@
                         enemy.pickRate,
                         enemyChampionPhaseDetails.get(enemy.championId)
                       )
-                    : `${t(`Opgg.positions.${enemy.position}`) || enemy.position} 未选择`
+                    : t('Opgg.draft.unselected', {
+                        position: t(`Opgg.positions.${enemy.position}`) || enemy.position
+                      })
                 "
                 @click="enemy.championId && (selectedCounterPickEnemyId = enemy.championId)"
               >
@@ -140,11 +142,11 @@
             </div>
           </div>
           <div class="champ-select-side-row" v-if="enemyPhaseAnalysis">
-            <div class="side-row-title">敌方节奏</div>
+            <div class="side-row-title">{{ t('Opgg.draft.enemyTempo') }}</div>
             <div
               class="team-phase-card"
               :class="phaseCssClass(enemyPhaseAnalysis.phase)"
-              :title="`前期 ${(enemyPhaseAnalysis.early * 100).toFixed(1)}%, 中期 ${(enemyPhaseAnalysis.mid * 100).toFixed(1)}%, 后期 ${(enemyPhaseAnalysis.late * 100).toFixed(1)}%`"
+              :title="formatPhaseBreakdownTitle(enemyPhaseAnalysis)"
             >
               <span class="team-phase-label">{{ enemyPhaseAnalysis.label }}</span>
               <div class="team-phase-bars">
@@ -165,8 +167,8 @@
             </div>
           </div>
           <div class="champ-select-side-row">
-            <div class="side-row-title">友方已选</div>
-            <div class="ally-list" v-if="alliedSelectedChampions.length">
+            <div class="side-row-title">{{ t('Opgg.draft.allyPicks') }}</div>
+            <div class="ally-list">
               <div
                 class="ally-item"
                 v-for="ally of allyChampionSlots"
@@ -183,7 +185,9 @@
                         null,
                         allyChampionPhaseDetails.get(ally.championId)
                       )
-                    : `${t(`Opgg.positions.${ally.position}`) || ally.position} 未选择`
+                    : t('Opgg.draft.unselected', {
+                        position: t(`Opgg.positions.${ally.position}`) || ally.position
+                      })
                 "
               >
                 <ChampionIcon
@@ -197,11 +201,11 @@
             </div>
           </div>
           <div class="champ-select-side-row" v-if="allyPhaseAnalysis">
-            <div class="side-row-title">友方节奏</div>
+            <div class="side-row-title">{{ t('Opgg.draft.allyTempo') }}</div>
             <div
               class="team-phase-card"
               :class="phaseCssClass(allyPhaseAnalysis.phase)"
-              :title="`前期 ${(allyPhaseAnalysis.early * 100).toFixed(1)}%, 中期 ${(allyPhaseAnalysis.mid * 100).toFixed(1)}%, 后期 ${(allyPhaseAnalysis.late * 100).toFixed(1)}%`"
+              :title="formatPhaseBreakdownTitle(allyPhaseAnalysis)"
             >
               <span class="team-phase-label">{{ allyPhaseAnalysis.label }}</span>
               <div class="team-phase-bars">
@@ -225,7 +229,7 @@
       </div>
       <div class="panel-section recommendation-section">
         <div class="section-title">
-          <span class="section-main-title">推荐选择</span>
+          <span class="section-main-title">{{ t('Opgg.draft.recommendations') }}</span>
           <span class="section-subtitle" v-if="counterPickContext.targetEnemy">
             vs
             {{
@@ -238,7 +242,9 @@
             circle
             size="tiny"
             class="expand-button"
-            :title="isCounterPickExpanded ? '收起完整列表' : '展开完整列表'"
+            :title="
+              isCounterPickExpanded ? t('Opgg.draft.collapseList') : t('Opgg.draft.expandList')
+            "
             @click="isCounterPickExpanded = !isCounterPickExpanded"
           >
             <template #icon>
@@ -253,13 +259,13 @@
           class="counter-detail-loading"
           v-if="isCounterPickExpanded && isLoadingTargetEnemyCounters"
         >
-          正在加载完整对位数据...
+          {{ t('Opgg.draft.loadingMatchups') }}
         </div>
         <div
           class="counter-detail-loading"
           v-if="isLoadingTeamSynergies && visibleTeamRecommendationItems.length === 0"
         >
-          正在加载团队组合数据...
+          {{ t('Opgg.draft.loadingSynergies') }}
         </div>
         <div class="recommendation-groups" v-if="visibleRecommendationGroups.length">
           <div
@@ -279,7 +285,13 @@
                 :key="`${group.key}-${item.championId}`"
                 @click="() => handleToChampion(item.championId, false)"
                 @contextmenu.prevent="(event) => openCounterPickMenu(event, item.championId)"
-                :title="`${lcs.gameData.champions[item.championId]?.name || item.championId} 胜率 ${(item.matchupWinRate * 100).toFixed(2)}%, 熟练度 ${item.masteryPoints.toLocaleString()}`"
+                :title="
+                  t('Opgg.draft.recommendationTitle', {
+                    champion: lcs.gameData.champions[item.championId]?.name || item.championId,
+                    winRate: (item.matchupWinRate * 100).toFixed(2),
+                    mastery: item.masteryPoints.toLocaleString()
+                  })
+                "
               >
                 <div class="duo-icons" v-if="item.partnerChampionId">
                   <ChampionIcon
@@ -320,7 +332,7 @@
             </div>
           </div>
         </div>
-        <div class="recommendation-empty" v-else>暂无可用推荐数据</div>
+        <div class="recommendation-empty" v-else>{{ t('Opgg.draft.noRecommendations') }}</div>
       </div>
     </div>
     <NDropdown
@@ -561,6 +573,8 @@ type RecommendationItem = {
   masteryLevel: number
   masteryPoints: number
 }
+type PhaseKey = 'early' | 'mid' | 'late' | 'balanced'
+type ShortPhase = { key: PhaseKey; label: string }
 const selectedCounterPickEnemyId = ref<number | null>(null)
 const isCounterPickExpanded = ref(false)
 const targetEnemyCounterDetails = shallowRef<{
@@ -837,6 +851,57 @@ const loadSelfChampionMastery = async () => {
   }
 }
 
+const toOpggTierFromLeagueTier = (leagueTier?: string | null): TierType | null => {
+  switch (leagueTier?.toUpperCase()) {
+    case 'IRON':
+      return 'iron'
+    case 'BRONZE':
+      return 'bronze'
+    case 'SILVER':
+      return 'silver'
+    case 'GOLD':
+      return 'gold'
+    case 'PLATINUM':
+      return 'platinum'
+    case 'EMERALD':
+      return 'emerald'
+    case 'DIAMOND':
+      return 'diamond'
+    case 'MASTER':
+      return 'master'
+    case 'GRANDMASTER':
+      return 'grandmaster'
+    case 'CHALLENGER':
+      return 'challenger'
+    default:
+      return null
+  }
+}
+
+const syncOpggTierWithCurrentRank = async () => {
+  if (lcs.connectionState !== 'connected' || mode.value === 'arena') {
+    return
+  }
+
+  try {
+    const { data } = await lc.api.ranked.getCurrentRankedStats()
+    const soloTier = toOpggTierFromLeagueTier(data.queueMap?.RANKED_SOLO_5x5?.tier)
+    const flexTier = toOpggTierFromLeagueTier(data.queueMap?.RANKED_FLEX_SR?.tier)
+    const highestTier = toOpggTierFromLeagueTier(data.highestCurrentSeasonReachedTierSR)
+    const nextTier = soloTier || flexTier || highestTier
+
+    if (!nextTier || nextTier === tier.value) {
+      return
+    }
+
+    tier.value = nextTier
+    savedPreferences.value.tier = nextTier
+    await loadAll()
+  } catch (error) {
+    log.warn('view:Opgg', `同步 OP.GG 段位失败: ${(error as any).message}`, error)
+  }
+}
+
 const cancelAll = () => {
   shouldStopLoading = true
   loadVersionsController?.abort()
@@ -887,12 +952,12 @@ const handleSelectCounterChampion = async (targetChampionId: number) => {
   const session = lcs.champSelect.session
 
   if (!session) {
-    message.warning('当前不在英雄选择阶段')
+    message.warning(t('Opgg.draft.notInChampSelect'))
     return
   }
 
   if (!isChampionAvailableForRecommendation(targetChampionId)) {
-    message.warning('该英雄当前不可选择')
+    message.warning(t('Opgg.draft.championUnavailable'))
     return
   }
 
@@ -902,7 +967,7 @@ const handleSelectCounterChampion = async (targetChampionId: number) => {
     .find((a) => a.actorCellId === selfCellId && a.type === 'pick' && !a.completed)
 
   if (!pickAction) {
-    message.warning('当前没有可执行的选择动作')
+    message.warning(t('Opgg.draft.noPickAction'))
     return
   }
 
@@ -911,7 +976,11 @@ const handleSelectCounterChampion = async (targetChampionId: number) => {
     if (self) {
       self.championPickIntent = targetChampionId
     }
-    message.success(`已模拟选择 ${lcs.gameData.champions[targetChampionId]?.name || targetChampionId}`)
+    message.success(
+      t('Opgg.draft.mockSelected', {
+        champion: lcs.gameData.champions[targetChampionId]?.name || targetChampionId
+      })
+    )
     return
   }
 
@@ -922,10 +991,14 @@ const handleSelectCounterChampion = async (targetChampionId: number) => {
       await lc.api.champSelect.intentChampion(pickAction.id, targetChampionId)
     }
 
-    message.success(`已选择 ${lcs.gameData.champions[targetChampionId]?.name || targetChampionId}`)
+    message.success(
+      t('Opgg.draft.selected', {
+        champion: lcs.gameData.champions[targetChampionId]?.name || targetChampionId
+      })
+    )
   } catch (error) {
     log.warn('view:Opgg', `选择 counter 英雄失败: ${(error as any).message}`, error)
-    message.warning(`选择失败: ${(error as any).message}`)
+    message.warning(t('Opgg.draft.selectFailed', { reason: (error as any).message }))
   }
 }
 
@@ -940,11 +1013,16 @@ const openCounterPickMenu = (event: MouseEvent, targetChampionId: number) => {
 
 const counterPickMenuOptions = computed(() => [
   {
-    label: `选择 ${lcs.gameData.champions[counterPickMenu.value.championId || -1]?.name || counterPickMenu.value.championId || ''}`,
+    label: t('Opgg.draft.selectChampion', {
+      champion:
+        lcs.gameData.champions[counterPickMenu.value.championId || -1]?.name ||
+        counterPickMenu.value.championId ||
+        ''
+    }),
     key: 'select'
   },
   {
-    label: '查看详情',
+    label: t('Opgg.draft.viewDetails'),
     key: 'detail'
   }
 ])
@@ -973,6 +1051,12 @@ watch(
   () => [lcs.connectionState, lcs.summoner.me?.puuid] as const,
   () => loadSelfChampionMastery(),
   { immediate: false }
+)
+
+watch(
+  () => [lcs.connectionState, lcs.summoner.me?.puuid] as const,
+  () => syncOpggTierWithCurrentRank(),
+  { immediate: true }
 )
 
 const championItem = computed(() => {
@@ -1020,13 +1104,13 @@ const regionOptions = computed(() => [
 
 const tierOptions = computed(() => [
   { label: t('Opgg.tiers.all'), value: 'all' },
-  { label: '黑铁', value: 'iron' },
-  { label: '青铜', value: 'bronze' },
-  { label: '白银', value: 'silver' },
-  { label: '黄金', value: 'gold' },
-  { label: '铂金', value: 'platinum' },
-  { label: '翡翠', value: 'emerald' },
-  { label: '钻石', value: 'diamond' },
+  { label: t('Opgg.tiers.iron'), value: 'iron' },
+  { label: t('Opgg.tiers.bronze'), value: 'bronze' },
+  { label: t('Opgg.tiers.silver'), value: 'silver' },
+  { label: t('Opgg.tiers.gold'), value: 'gold' },
+  { label: t('Opgg.tiers.platinum'), value: 'platinum' },
+  { label: t('Opgg.tiers.emerald'), value: 'emerald' },
+  { label: t('Opgg.tiers.diamond'), value: 'diamond' },
   { label: t('Opgg.tiers.master'), value: 'master' },
   { label: t('Opgg.tiers.grandmaster'), value: 'grandmaster' },
   { label: t('Opgg.tiers.challenger'), value: 'challenger' }
@@ -1092,6 +1176,37 @@ const getPositionData = (championRow: any, targetPosition: PositionType | string
   return (
     championRow.positions.find((p: any) => p.name?.toUpperCase() === positionName) || null
   )
+}
+
+const inferChampionPrimaryPosition = (championId: number): PositionType | null => {
+  if (!tierData.value) {
+    return null
+  }
+
+  const championRow = (tierData.value.data as any[]).find((row) => row.id === championId)
+
+  if (!championRow?.positions?.length) {
+    return null
+  }
+
+  const positionName = championRow.positions
+    .toSorted((a: any, b: any) => (b.stats?.pick_rate || 0) - (a.stats?.pick_rate || 0))[0]
+    ?.name?.toUpperCase()
+
+  switch (positionName) {
+    case 'TOP':
+      return 'top'
+    case 'JUNGLE':
+      return 'jungle'
+    case 'MID':
+      return 'mid'
+    case 'ADC':
+      return 'adc'
+    case 'SUPPORT':
+      return 'support'
+    default:
+      return null
+  }
 }
 
 const isChampionAvailableForRecommendation = (championId: number) => {
@@ -1175,32 +1290,14 @@ const counterPickEnemies = computed(() => {
     .toSorted((a, b) => b.pickRate - a.pickRate)
 })
 
-const getChampionPositionPickRate = (championId: number, targetPosition: PositionType) => {
-  if (!tierData.value) {
-    return 0
-  }
-
-  const championRow = (tierData.value.data as any[]).find((row) => row.id === championId)
-  const positionData = getPositionData(championRow, targetPosition)
-
-  return positionData?.stats?.pick_rate || 0
-}
-
 const enemyChampionSlots = computed(() => {
-  const session = lcs.champSelect.session
+  const sortedEnemies = counterPickEnemies.value
 
-  return POSITION_SLOT_ORDER.map((slotPosition) => {
-    const player = session?.theirTeam.find(
-      (item) => toPositionTypeFromAssignedPosition(item.assignedPosition) === slotPosition
-    )
-    const championId = player?.championId || player?.championPickIntent || null
-
-    return {
-      position: slotPosition,
-      championId,
-      pickRate: championId ? getChampionPositionPickRate(championId, position.value) : 0
-    }
-  })
+  return POSITION_SLOT_ORDER.map((slotPosition, index) => ({
+    position: slotPosition,
+    championId: sortedEnemies[index]?.championId || null,
+    pickRate: sortedEnemies[index]?.pickRate || 0
+  }))
 })
 
 const allyChampionSlots = computed(() => {
@@ -1367,7 +1464,9 @@ const selectedEnemyChampionsForPhase = computed(() => {
   return session.theirTeam
     .map((player) => {
       const championId = player.championId || player.championPickIntent || 0
-      const championPosition = toPositionTypeFromAssignedPosition(player.assignedPosition)
+      const championPosition =
+        toPositionTypeFromAssignedPosition(player.assignedPosition) ||
+        inferChampionPrimaryPosition(championId)
 
       if (championId <= 0 || !championPosition) {
         return null
@@ -1409,21 +1508,21 @@ const analyzePhaseProfiles = (
   const early = averageRate((gameLength) => gameLength <= 25)
   const mid = averageRate((gameLength) => gameLength > 25 && gameLength <= 35)
   const late = averageRate((gameLength) => gameLength > 35)
-  const values = [
-    { key: 'early', label: '前期阵容', value: early },
-    { key: 'mid', label: '中期阵容', value: mid },
-    { key: 'late', label: '后期阵容', value: late }
+  const values: Array<{ key: PhaseKey; value: number }> = [
+    { key: 'early', value: early },
+    { key: 'mid', value: mid },
+    { key: 'late', value: late }
   ]
   const sorted = values.toSorted((a, b) => b.value - a.value)
   const spread = sorted[0].value - sorted[2].value
-  const label = spread < 0.012 ? '均衡阵容' : sorted[0].label
+  const phaseKey: PhaseKey = spread < 0.012 ? 'balanced' : sorted[0].key
   const minRate = Math.min(early, mid, late)
   const normalized = [early, mid, late].map((rate) => Math.max(0.08, rate - minRate + 0.02))
   const total = normalized.reduce((sum, rate) => sum + rate, 0)
 
   return {
-    label,
-    phase: toShortPhaseLabel(label),
+    label: t(`Opgg.draft.phases.${phaseKey}`),
+    phase: toShortPhaseLabel(phaseKey),
     early,
     mid,
     late,
@@ -1434,24 +1533,11 @@ const analyzePhaseProfiles = (
   }
 }
 
-const toShortPhaseLabel = (label: string): { key: 'early' | 'mid' | 'late' | 'balanced'; label: string } => {
-  if (label.includes('前期')) {
-    return { key: 'early', label: '前' }
-  }
-
-  if (label.includes('中期')) {
-    return { key: 'mid', label: '中' }
-  }
-
-  if (label.includes('后期')) {
-    return { key: 'late', label: '后' }
-  }
-
-  return { key: 'balanced', label: '均' }
+const toShortPhaseLabel = (key: PhaseKey): ShortPhase => {
+  return { key, label: t(`Opgg.draft.phaseShort.${key}`) }
 }
 
-const phaseCssClass = (phase?: ReturnType<typeof toShortPhaseLabel>) =>
-  phase ? `phase-${phase.key}` : ''
+const phaseCssClass = (phase?: ShortPhase) => (phase ? `phase-${phase.key}` : '')
 
 const allyPhaseAnalysis = computed(() => analyzePhaseProfiles(allyPhaseChampionDetails.value))
 
@@ -1464,7 +1550,7 @@ const allyChampionPhaseLabels = computed(() => {
     const analysis = analyzePhaseProfiles([profile])
 
     if (analysis) {
-      labels.set(profile.championId, toShortPhaseLabel(analysis.label))
+      labels.set(profile.championId, analysis.phase)
     }
   })
 
@@ -1478,7 +1564,7 @@ const enemyChampionPhaseLabels = computed(() => {
     const analysis = analyzePhaseProfiles([profile])
 
     if (analysis) {
-      labels.set(profile.championId, toShortPhaseLabel(analysis.label))
+      labels.set(profile.championId, analysis.phase)
     }
   })
 
@@ -1520,14 +1606,28 @@ const formatChampionPhaseTitle = (
   phase: NonNullable<ReturnType<typeof analyzePhaseProfiles>> | undefined
 ) => {
   const name = lcs.gameData.champions[championId]?.name || championId
-  const pickRateText = pickRate === null ? '' : ` pick rate ${(pickRate * 100).toFixed(2)}%`
+  const pickRateText =
+    pickRate === null
+      ? ''
+      : ` ${t('Opgg.draft.pickRate', { value: (pickRate * 100).toFixed(2) })}`
 
   if (!phase) {
     return `${name} ${positionLabel}${pickRateText}`
   }
 
-  return `${name} ${positionLabel}${pickRateText} | ${phase.label}：前期 ${(phase.early * 100).toFixed(1)}%，中期 ${(phase.mid * 100).toFixed(1)}%，后期 ${(phase.late * 100).toFixed(1)}%`
+  return `${name} ${positionLabel}${pickRateText} | ${phase.label}: ${formatPhaseBreakdownTitle(phase)}`
 }
+
+const formatPhaseBreakdownTitle = (phase: {
+  early: number
+  mid: number
+  late: number
+}) =>
+  t('Opgg.draft.phaseBreakdown', {
+    early: (phase.early * 100).toFixed(1),
+    mid: (phase.mid * 100).toFixed(1),
+    late: (phase.late * 100).toFixed(1)
+  })
 
 const teamSynergyPartnerPositions = computed(() => {
   switch (position.value) {
@@ -1549,17 +1649,17 @@ const teamSynergyPartnerPositions = computed(() => {
 const teamSynergyPartnerLabel = computed(() => {
   switch (position.value) {
     case 'top':
-      return '上野'
+      return t('Opgg.draft.synergyLabels.top')
     case 'jungle':
-      return '野中上'
+      return t('Opgg.draft.synergyLabels.jungle')
     case 'mid':
-      return '中野'
+      return t('Opgg.draft.synergyLabels.mid')
     case 'adc':
-      return '下辅'
+      return t('Opgg.draft.synergyLabels.adc')
     case 'support':
-      return '辅射'
+      return t('Opgg.draft.synergyLabels.support')
     default:
-      return '团队'
+      return t('Opgg.draft.synergyLabels.team')
   }
 })
 
@@ -1904,10 +2004,12 @@ const visibleRecommendationGroups = computed(() => {
   if (soloItems.length) {
     groups.push({
       key: 'solo',
-      title: '单人推荐',
+      title: t('Opgg.draft.soloRecommendations'),
       description: targetEnemy
-        ? `基于 ${lcs.gameData.champions[targetEnemy.championId]?.name || targetEnemy.championId} 对位`
-        : '基于当前分路 T0/T1',
+        ? t('Opgg.draft.basedOnMatchup', {
+            champion: lcs.gameData.champions[targetEnemy.championId]?.name || targetEnemy.championId
+          })
+        : t('Opgg.draft.basedOnTier'),
       items: soloItems
     })
   }
@@ -1915,8 +2017,10 @@ const visibleRecommendationGroups = computed(() => {
   if (teamItems.length) {
     groups.push({
       key: 'team',
-      title: `团队推荐（${teamSynergyPartnerLabel.value}）`,
-      description: `基于 ${alliedSynergyPartners.value.length} 个相关友方英雄组合`,
+      title: t('Opgg.draft.teamRecommendations', { label: teamSynergyPartnerLabel.value }),
+      description: t('Opgg.draft.basedOnSynergyCount', {
+        count: alliedSynergyPartners.value.length
+      }),
       items: teamItems
     })
   }
