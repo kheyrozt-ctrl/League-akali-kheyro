@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write # allow creating / updating Release
+  packages: read
 
 jobs:
   build-release:
@@ -35,6 +36,15 @@ jobs:
         run: |
           corepack enable
           yarn --version
+
+      - name: Validate GitHub Packages auth
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:NODE_AUTH_TOKEN)) {
+            Write-Error "NPM_AUTH_TOKEN secret is missing."
+            exit 1
+          }
+          yarn npm whoami --scope leagueakari
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile

@@ -35,6 +35,8 @@ Supports most of the riot servers (not including Tencent).
 
 ## 1.3 Feedback Group
 
+(Below is official group for original projects, for modifiedd version's feedback plz dm!!!)
+
 Fun places for casual chats, party setups, bug reports, and suggestions.
 
 QQ Group: [301157623](https://qm.qq.com/q/F1Xv85etlm) (Passcode: akari)
