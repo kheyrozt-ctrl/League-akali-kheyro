@@ -1,4 +1,5 @@
 export const LEAGUE_AKARI_GITHUB = 'https://github.com/kheyrozt-ctrl/League-akali-kheyro'
+export const UPSTREAM_LEAGUE_AKARI_GITHUB = 'https://github.com/LeagueAkari/LeagueAkari'
 
 export const LEAGUE_AKARI_CHECK_ANNOUNCEMENT_URL =
   'https://api.github.com/repos/kheyrozt-ctrl/League-akali-kheyro/contents/docs/announcement.md'

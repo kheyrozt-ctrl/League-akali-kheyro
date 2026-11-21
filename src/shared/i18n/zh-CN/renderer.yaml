@@ -110,6 +110,19 @@ OngoingGameTitle:
 
 AppSettings:
   title: 应用
+  language:
+    label: 语言
+    description: 设置 League Akari 的主语言
+  localeOptions:
+    zh: 中文
+    en: English
+  themeColor:
+    label: 主题颜色（实验性）
+    description: League Akari 的主题颜色（仅调试版本）
+  themeOptions:
+    default: 跟随系统
+    light: 亮色
+    dark: 暗色
 
   basic:
     title: 基础
@@ -633,7 +646,8 @@ AboutPane:
   title: 关于
   line1: ' (联盟阿卡林，Version {{version}}) 是开源软件，专注于提供一些额外的功能，以辅助英雄联盟的游戏体验，其几乎所有实现都依赖'
   line2: 项目参考
-  copyright: © 2025 Hanxven. 本软件为开源软件，遵循 GPL-3.0 许可证。
+  upstream: 上游项目
+  copyright: © 2025 Hanxven。本非官方分支包含独立修改，遵循 GPL-3.0 许可证发布，不提供任何担保。
 
 Automation:
   title: 自动化
@@ -644,6 +658,7 @@ Automation:
 
 AutoGameflow:
   title: 游戏流
+  secondsPlaceholder: 秒
 
   autoAcceptEnabled:
     label: 自动接受对局开启
@@ -858,6 +873,8 @@ OrderedChampionList:
   searchForChampion: 搜索英雄
   edit: 编辑
   unselected: 未选择
+  moveUp: 上移
+  moveDown: 下移
 
 RankedTable:
   queueType: 队列
@@ -933,6 +950,7 @@ SearchSummonerModal:
   exactSearch: 当前为精确搜索：搜索指定名称和标签的召唤师
   fuzzySearch: 当前为模糊搜索：搜索指定名称的召唤师
   getFriendsFailed: 获取好友列表失败
+  searchFailed: 查询失败：{{reason}}
   showAll: 显示所有
   clear: 清空
 
@@ -1210,6 +1228,7 @@ ChatAvailability:
   lockOfflineStatus:
     label: 尝试锁定离线状态
     description: 设置离线状态后，尝试纠正客户端自动设置的离开状态
+    button: 设置
 
 ChatStatusMessage:
   title: 聊天签名
@@ -1745,6 +1764,7 @@ OpggWindowTitleBar:
   repositionToAlignLeagueClientUx: 贴附到客户端
 
 BenchChampionsMini:
+  title: 英雄备选区
   reroll: '重随 (剩余: {{countV}})'
   charity: '重随并立即取回 (剩余: {{countV}})'
   notInBenchMode: 当前不在随机模式中
@@ -2325,3 +2345,45 @@ self-update-renderer:
     unpack-failed: 解压更新包失败
     waiting-for-restart: 更新包解压完成，应用关闭后将自动应用更新流程
     cancelButton: 取消
+
+FunnyPricing:
+  title: 选择你的订阅
+  balance: 当前余额：
+  currency: 阿卡林币
+  topUp: 充值
+  monthly: 阿卡林币 / 月
+  free: 免费
+  currentPlan: 当前的方案
+  subscribe: 订阅
+  commonPrivileges:
+    matchHistory: 战绩查询以及跨区查询
+    playerLookup: 玩家 ID 查询
+    gameAnalysis: 对局战绩分析
+    spectate: 观战玩家
+    automation: 自动英雄选择或禁用、自动游戏流程（接受对局、自动匹配、自动点赞、自动回到房间）等
+    toolkit: 小工具集合，包括修改生涯背景、伪装段位信息等
+  plans:
+    basic:
+      title: 基础版
+      description: 最实惠的选择！
+    pro:
+      title: ⭐ Pro 版
+      description: 进阶用户最爱！
+      bonus: 多花 30 阿卡林币
+    max:
+      title: ⭐ Max 版
+      description: 满足一切需求！
+      bonus: 多花 30 阿卡林币
+      bonus2: 再多花 168 阿卡林币
+  praise:
+    great: 非常厉害！
+    nice: 很棒很棒！
+
+FunnyAppLogo:
+  subscriptions:
+    basic: 基础版
+    pro: ⭐ Pro 版
+    max: ⭐ Max 版
+  basicPurchased: 平平淡淡才是真，你现在是落后的 {{plan}} 用户
+  purchased: 恭喜您购买了 {{plan}}，您现在是尊贵的 {{plan}} 用户！
+  notEnough: 您的余额不足，需要 {{price}} 阿卡林币

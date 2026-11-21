@@ -22,10 +22,22 @@
 
 A League of Legends client toolkit based on the LCU API.
 
-This fork is based on the original League Akari project and adds an enhanced
+This repository is an unofficial fork of the original [League Akari project](https://github.com/LeagueAkari/LeagueAkari), based on the v1.3.7 codebase. It adds an enhanced
 OP.GG-powered champion select assistant. The new draft helper provides matchup
 recommendations, role-aware synergy suggestions, ally/enemy composition tempo
 analysis, champion phase indicators, and mock champion-select testing support.
+
+## Upstream and License
+
+- Upstream project: [LeagueAkari/LeagueAkari](https://github.com/LeagueAkari/LeagueAkari)
+- Base version: `v1.3.7`
+- License: [GNU GPL-3.0](LICENSE)
+- This fork contains independent modifications maintained by `kheyrozt-ctrl`.
+- The original copyright, license, and warranty notices are retained. This fork is not an official release of the upstream project.
+
+See [UPSTREAM.md](UPSTREAM.md) for provenance, modification notes, and release guidance. Third-party package and asset notices are documented in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+When distributing a compiled executable, keep the corresponding source available from the same release page or provide clear directions to the exact source commit. The source needed to build and modify the executable is this repository, including its build configuration and lockfile.
 
 ## 1.2 Usage Instructions
 
@@ -35,7 +47,7 @@ Supports most of the riot servers (not including Tencent).
 
 ## 1.3 Feedback Group
 
-(Below is official group for original projects, for modifiedd version's feedback plz dm!!!)
+The following communities belong to the original upstream project. Please use this fork's GitHub Issues for fork-specific bugs and feature requests; do not present this fork as an official upstream release.
 
 Fun places for casual chats, party setups, bug reports, and suggestions.
 
@@ -92,13 +104,15 @@ The development of **League Akari** has been greatly inspired by several outstan
 | [vscode-league-respawn-timer](https://github.com/Coooookies/vscode-league-respawn-timer)           | An extension to display League of Legends player respawn time in Visual Studio Code. |
 | [LeaguePrank](https://github.com/LeagueTavern/LeaguePrank)                                         | Provided inspiration for playful and humorous features.                              |
 
+The projects listed above remain subject to their own licenses. This repository does not claim ownership of their code, documentation, assets, or trademarks.
+
 # 5. Disclaimer
 
 This software is a tool developed based on Riot's League Client Update (LCU) API. It does not use intrusive techniques and theoretically does not directly interfere with or modify game data. However, please be aware of potential compatibility issues or risks associated with game updates or anti-cheat systems.
 
 The developer is not responsible for any consequences, such as account bans or data loss, resulting from the use of this software. Users are advised to fully understand the risks and take responsibility for their actions.
 
-Additionally, **this application is not officially supported or endorsed by Riot Games**, all right reserved by Riot Games. Use it at your own risk, as it may violate the game's terms of service.
+Additionally, **this application is not officially supported or endorsed by Riot Games**. Riot Games retains all rights to its names, logos, game data, and trademarks. Use it at your own risk, as it may violate the game's terms of service.
 
 This disclaimer is intended to provide transparency and enable users to make informed decisions. Thank you for your understanding, and please ensure fair play in the gaming environment.
 

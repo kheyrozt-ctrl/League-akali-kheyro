@@ -98,11 +98,20 @@ import { useInstance } from '@renderer-shared/shards'
 import { LeagueClientRenderer } from '@renderer-shared/shards/league-client'
 import { useLeagueClientStore } from '@renderer-shared/shards/league-client/store'
 import { AvailableBot, QueueEligibility } from '@shared/types/league-client/lobby'
+import { QUEUE_TYPE_BY_ID } from '@shared/utils/queue-name'
 import { useTranslation } from 'i18next-vue'
 import { NButton, NCard, NFlex, NInput, NSelect, useMessage, useNotification } from 'naive-ui'
 import { computed, reactive, ref, shallowRef } from 'vue'
 
 const { t } = useTranslation()
+
+const formatQueueName = (queueId: number) => {
+  const queue = lcs.gameData.queues[queueId]
+  const queueType = QUEUE_TYPE_BY_ID[queueId]
+  return queueType
+    ? t(`queueTypes.${queueType}`, { ns: 'common', defaultValue: queue?.name ?? queueId })
+    : (queue?.name ?? queueId)
+}
 
 const lcs = useLeagueClientStore()
 const lc = useInstance(LeagueClientRenderer)
@@ -210,7 +219,7 @@ const queueOptions = computed(() => {
       type: 'group',
       children: availableQueues.map((k) => ({
         value: k,
-        label: `${lcs.gameData.queues[k].name} (${k})`
+        label: `${formatQueueName(k)} (${k})`
       }))
     })
   }
@@ -222,7 +231,7 @@ const queueOptions = computed(() => {
       type: 'group',
       children: unavailableQueues.map((k) => ({
         value: k,
-        label: `${lcs.gameData.queues[k].name} (${k})`
+        label: `${formatQueueName(k)} (${k})`
       }))
     })
   }

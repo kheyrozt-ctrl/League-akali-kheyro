@@ -50,12 +50,19 @@ teams:
   their-2: 敌方 (红队)
 
 queueTypes:
+  CUSTOM: 自定义
   RANKED_SOLO_5x5: 单双排位
-  RANKED_FLEX_SR: 灵活排位
   NORMAL: 匹配模式
+  RANKED_FLEX_SR: 灵活排位
   ARAM_UNRANKED_5x5: 极地大乱斗
+  SWIFTPLAY: 快速模式
+  QUICKPLAY: 快速匹配
+  BOT_INTRO: 新手人机
+  BOT_INTERMEDIATE: 中等人机
+  BOT_BEGINNER: 普通人机
   CHERRY: 斗魂竞技场
   URF: 无限火力 / 无限乱斗
+  BRAWL: 神木之门
   RANKED_FLEX_TT: 灵活排位 3v3
   NORMAL_TFT: 云顶之弈
   RANKED_TFT: 云顶之弈 排位
@@ -133,3 +140,6 @@ sgpServers:
   TR1: 土耳其
   RU: 俄罗斯
   JP1: 日本
+
+champions:
+  bravery: 勇敢举动

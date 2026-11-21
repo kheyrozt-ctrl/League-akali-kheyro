@@ -563,7 +563,8 @@
       </div>
       <div class="card-area" v-if="data && data.data.starter_items && data.data.boots.length">
         <div class="card-title">
-          鞋子<NCheckbox
+          {{ t('OpggChampion.bootsDesc')
+          }}<NCheckbox
             v-if="data.data.boots.length > 4"
             size="small"
             v-model:checked="isBootsExpanded"

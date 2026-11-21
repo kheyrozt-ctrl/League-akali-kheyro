@@ -1,6 +1,12 @@
 {
   "name": "league-akari",
   "version": "1.3.7",
+  "license": "GPL-3.0-only",
+  "homepage": "https://github.com/kheyrozt-ctrl/League-akali-kheyro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kheyrozt-ctrl/League-akali-kheyro.git"
+  },
   "author": {
     "name": "Hanxven",
     "email": "hanxven@gmail.com"

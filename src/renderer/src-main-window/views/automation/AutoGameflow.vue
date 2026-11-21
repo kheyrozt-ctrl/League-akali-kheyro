@@ -110,7 +110,7 @@
               style="width: 100px"
               :value="store.settings.autoMatchmakingDelaySeconds"
               @update:value="(value) => shard.setAutoMatchmakingDelaySeconds(value || 0)"
-              placeholder="秒"
+              :placeholder="t('AutoGameflow.secondsPlaceholder')"
               :min="0"
               size="small"
             />

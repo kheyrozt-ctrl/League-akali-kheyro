@@ -210,7 +210,7 @@ const renderTargetLabel: TransferRenderTargetLabel = ({ option }) => {
           onClick: () => moveUp(option.value as number),
           disabled: champions.value.indexOf(option.value as number) === 0
         },
-        () => '↑上移'
+        () => `↑${t('OrderedChampionList.moveUp')}`
       ),
       h(
         NButton,
@@ -223,7 +223,7 @@ const renderTargetLabel: TransferRenderTargetLabel = ({ option }) => {
           onClick: () => moveDown(option.value as number),
           disabled: champions.value.indexOf(option.value as number) === champions.value.length - 1
         },
-        () => '↓下移'
+        () => `↓${t('OrderedChampionList.moveDown')}`
       )
     ]
   )

@@ -1,11 +1,12 @@
 <template>
   <NModal v-model:show="show">
     <div class="pricing-wrapper">
-      <div class="beautiful-akari">选择你的订阅</div>
+      <div class="beautiful-akari">{{ t('FunnyPricing.title') }}</div>
       <div class="credit">
-        <span>当前余额：</span>
+        <span>{{ t('FunnyPricing.balance') }}</span>
         <span class="credit-amount"
-          >{{ formatCredit / 1000 }} <span class="akari">阿卡林币</span></span
+          >{{ formatCredit / 1000 }}
+          <span class="akari">{{ t('FunnyPricing.currency') }}</span></span
         >
         <NButton
           type="primary"
@@ -19,7 +20,7 @@
           @keydown.enter.prevent
           @keyup.enter.prevent
           @click="handleTopUp"
-          >充值</NButton
+          >{{ t('FunnyPricing.topUp') }}</NButton
         >
       </div>
       <div class="pricing-items">
@@ -28,10 +29,10 @@
           <div class="price">
             <template v-if="c.price !== 0">
               <span class="big">{{ c.price / 1000 }}</span>
-              <span class="monthly">阿卡林币 / 月</span>
+              <span class="monthly">{{ t('FunnyPricing.monthly') }}</span>
             </template>
             <template v-else>
-              <span class="big">免费</span>
+              <span class="big">{{ t('FunnyPricing.free') }}</span>
             </template>
           </div>
           <div class="description">{{ c.description }}</div>
@@ -47,7 +48,7 @@
             </div>
           </div>
           <div class="subscribe" :class="{ current: current === c.id }" @click="handleBuy(c)">
-            {{ current === c.id ? '当前的方案' : '订阅' }}
+            {{ current === c.id ? t('FunnyPricing.currentPlan') : t('FunnyPricing.subscribe') }}
           </div>
         </div>
       </div>
@@ -64,8 +65,6 @@ import { computed, ref, useTemplateRef, watch } from 'vue'
 const show = defineModel('show', { default: false })
 const balance = ref(0) // 单位是厘
 
-// 很遗憾, 没有 i18n
-//
 const { t } = useTranslation()
 
 const emits = defineEmits<{
@@ -105,43 +104,42 @@ interface ItemType {
   privileges: { level: number; text: string }[]
 }
 
-// 三种套餐都是一样的, 仔细一看没有区别
-const commonPart = [
-  { level: 1, text: '战绩查询以及跨区查询' },
-  { level: 1, text: '玩家 ID 查询' },
-  { level: 1, text: '对局战绩分析' },
-  { level: 1, text: '观战玩家' },
+const commonPart = computed(() => [
+  { level: 1, text: t('FunnyPricing.commonPrivileges.matchHistory') },
+  { level: 1, text: t('FunnyPricing.commonPrivileges.playerLookup') },
+  { level: 1, text: t('FunnyPricing.commonPrivileges.gameAnalysis') },
+  { level: 1, text: t('FunnyPricing.commonPrivileges.spectate') },
   {
     level: 1,
-    text: '自动英雄选择或禁用，自动游戏流程（接受对局，自动匹配，自动点赞，自动回到房间）等'
+    text: t('FunnyPricing.commonPrivileges.automation')
   },
-  { level: 1, text: '小工具集合，包括修改生涯背景，伪装段位信息等' }
-]
+  { level: 1, text: t('FunnyPricing.commonPrivileges.toolkit') }
+])
 
-const choices = ref([
+const choices = computed(() => [
   {
     id: 'basic',
-    title: '基础版',
+    title: t('FunnyPricing.plans.basic.title'),
     price: 0,
-    description: '最实惠的选择！',
-    privileges: [...commonPart]
+    description: t('FunnyPricing.plans.basic.description'),
+    privileges: [...commonPart.value]
   },
   {
     id: 'pro',
-    title: '⭐ Pro 版',
+    title: t('FunnyPricing.plans.pro.title'),
     price: 30000,
-    description: '进阶用户最爱！',
-    privileges: [...commonPart, { level: 2, text: '多花 30 阿卡林币' }]
+    description: t('FunnyPricing.plans.pro.description'),
+    privileges: [...commonPart.value, { level: 2, text: t('FunnyPricing.plans.pro.bonus') }]
   },
   {
     id: 'max',
-    title: '⭐ Max 版',
+    title: t('FunnyPricing.plans.max.title'),
     price: 198000,
-    description: '满足一切需求！',
+    description: t('FunnyPricing.plans.max.description'),
     privileges: [
-      ...commonPart,
-      { level: 2, text: '多花 30 阿卡林币' },
-      { level: 3, text: '再多花 168 阿卡林币' }
+      ...commonPart.value,
+      { level: 2, text: t('FunnyPricing.plans.max.bonus') },
+      { level: 3, text: t('FunnyPricing.plans.max.bonus2') }
     ]
   }
 ])
@@ -161,7 +159,6 @@ const handleBuy = (item: any) => {
 
 const btnEl = useTemplateRef('btn')
 
-// 生产小粒子, 提供视觉效果
 const createSmallParticle = (text: string = '1') => {
   const el = btnEl.value?.$el
 
@@ -207,10 +204,9 @@ const createSmallParticle = (text: string = '1') => {
 
 let lastClicked = 0
 let clickCount = 0
-let is棒triggered = false
-let is牛triggered = false
+let isNiceTriggered = false
+let isGreatTriggered = false
 
-// 拼多多 —— implemented by League Akari
 const handleTopUp = () => {
   const now = Date.now()
 
@@ -218,18 +214,18 @@ const handleTopUp = () => {
     clickCount++
   } else {
     clickCount = 1
-    is棒triggered = false
-    is牛triggered = false
+    isNiceTriggered = false
+    isGreatTriggered = false
   }
 
   lastClicked = now
 
-  if (!is牛triggered && clickCount >= 25) {
-    createSmallParticle('非常厉害！')
-    is牛triggered = true
-  } else if (!is棒triggered && clickCount >= 10) {
-    createSmallParticle('很棒很棒！')
-    is棒triggered = true
+  if (!isGreatTriggered && clickCount >= 25) {
+    createSmallParticle(t('FunnyPricing.praise.great'))
+    isGreatTriggered = true
+  } else if (!isNiceTriggered && clickCount >= 10) {
+    createSmallParticle(t('FunnyPricing.praise.nice'))
+    isNiceTriggered = true
   }
 
   if (balance.value < 29000) {

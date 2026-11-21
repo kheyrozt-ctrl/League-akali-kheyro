@@ -478,10 +478,10 @@ const handleError = (error: unknown, on404?: () => void) => {
       on404?.()
       return
     } else {
-      message.warning(`尝试查询时发生错误: ${error.message}`)
+      message.warning(t('SearchSummonerModal.searchFailed', { reason: error.message }))
     }
   } else if (error instanceof Error) {
-    message.warning(`尝试查询时发生错误: ${error.message}`)
+    message.warning(t('SearchSummonerModal.searchFailed', { reason: error.message }))
   }
 }
 

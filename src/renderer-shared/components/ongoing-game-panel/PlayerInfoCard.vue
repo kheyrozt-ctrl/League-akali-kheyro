@@ -400,7 +400,7 @@
             <ChampionIcon :champion-id="item.selfParticipant.championId" class="champion-icon" />
             <div class="queue-name-date">
               <div class="queue-name">
-                {{ lcs.gameData.queues[item.game.queueId]?.name || item.game.queueId }}
+                {{ formatQueueName(item.game.queueId) }}
               </div>
               <div class="line2">
                 {{ dayjs(item.game.gameCreation).format('MM-DD HH:mm') }}
@@ -453,6 +453,7 @@ import {
   SelfParticipantGame,
   withSelfParticipantMatchHistory
 } from '@shared/utils/analysis'
+import { QUEUE_TYPE_BY_ID } from '@shared/utils/queue-name'
 import { ParsedRole } from '@shared/utils/ranked'
 import { Warning as WarningIcon } from '@vicons/ionicons5'
 import { StarRound as StarRoundIcon } from '@vicons/material'
@@ -512,6 +513,14 @@ const emits = defineEmits<{
 }>()
 
 const { t } = useTranslation()
+
+const formatQueueName = (queueId: number) => {
+  const queue = lcs.gameData.queues[queueId]
+  const queueType = QUEUE_TYPE_BY_ID[queueId]
+  return queueType
+    ? t(`queueTypes.${queueType}`, { ns: 'common', defaultValue: queue?.name ?? queueId })
+    : (queue?.name ?? queueId)
+}
 
 const STARED_CHAMPION_LEVEL = 60
 

@@ -50,12 +50,19 @@ teams:
   their-2: Their (Red Team)
 
 queueTypes:
+  CUSTOM: Custom
   RANKED_SOLO_5x5: Ranked Solo/Duo
-  RANKED_FLEX_SR: Ranked Flex
   NORMAL: Normal SR
+  RANKED_FLEX_SR: Ranked Flex
   ARAM_UNRANKED_5x5: ARAM
+  SWIFTPLAY: Swiftplay
+  QUICKPLAY: Quickplay
+  BOT_INTRO: Intro Bots
+  BOT_INTERMEDIATE: Intermediate Bots
+  BOT_BEGINNER: Beginner Bots
   CHERRY: Arena
   URF: URF
+  BRAWL: Brawl
   RANKED_FLEX_TT: Ranked Flex TT
   NORMAL_TFT: TFT
   RANKED_TFT: TFT Ranked

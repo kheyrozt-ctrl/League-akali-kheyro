@@ -16,16 +16,19 @@
 
 <script setup lang="ts">
 import { useAppCommonStore } from '@renderer-shared/shards/app-common/store'
+import { useTranslation } from 'i18next-vue'
 import { useMessage } from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
 
 import FunnyPricing from './FunnyPricing.vue'
 
-const subscriptionText = {
-  basic: '基础版',
-  pro: '⭐ Pro 版',
-  max: '⭐ Max 版'
-}
+const { t } = useTranslation()
+
+const subscriptionText = computed(() => ({
+  basic: t('FunnyAppLogo.subscriptions.basic'),
+  pro: t('FunnyAppLogo.subscriptions.pro'),
+  max: t('FunnyAppLogo.subscriptions.max')
+}))
 
 const show = ref(false)
 const as = useAppCommonStore()
@@ -53,14 +56,14 @@ const handlePurchased = (item: any) => {
     current: item.id
   }
   if (item.id === 'basic') {
-    message.success(`平平淡淡才是真，你现在是落后的 ${item.title} 用户`)
+    message.success(t('FunnyAppLogo.basicPurchased', { plan: item.title }))
   } else {
-    message.success(`恭喜您购买了 ${item.title}，您现在是尊贵的 ${item.title} 用户！`)
+    message.success(t('FunnyAppLogo.purchased', { plan: item.title }))
   }
 }
 
 const handleNotEnough = (item: any) => {
-  message.warning(`您的余额不足，需要 ${item.price / 1000} 阿卡林币`)
+  message.warning(t('FunnyAppLogo.notEnough', { price: item.price / 1000 }))
 }
 </script>
 

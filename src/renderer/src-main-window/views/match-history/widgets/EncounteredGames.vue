@@ -148,6 +148,7 @@ import { SgpRenderer } from '@renderer-shared/shards/sgp'
 import { useSgpStore } from '@renderer-shared/shards/sgp/store'
 import { formatI18nOrdinal } from '@shared/i18n'
 import { Game } from '@shared/types/league-client/match-history'
+import { QUEUE_TYPE_BY_ID } from '@shared/utils/queue-name'
 import { ArrowLeft as ArrowLeftIcon, ArrowRight as ArrowRightIcon } from '@vicons/carbon'
 import { Delete as DeleteIcon } from '@vicons/carbon'
 import dayjs from 'dayjs'
@@ -161,6 +162,14 @@ import {
 } from '@main-window/shards/match-history-tabs/store'
 
 const { t } = useTranslation()
+
+const formatQueueName = (queueId: number) => {
+  const queue = lcs.gameData.queues[queueId]
+  const queueType = QUEUE_TYPE_BY_ID[queueId]
+  return queueType
+    ? t(`queueTypes.${queueType}`, { ns: 'common', defaultValue: queue?.name ?? queueId })
+    : (queue?.name ?? queueId)
+}
 
 const NAMESPACE = 'component:EncounteredGames'
 
@@ -257,7 +266,7 @@ const games = computed(() => {
       recordId: g.id,
       gameId: g.gameId,
       game: {
-        queueName: lcs.gameData.queues[game.queueId]?.name || game.queueId,
+        queueName: formatQueueName(game.queueId),
         date: game.gameCreation,
         type: type,
         p1: d1

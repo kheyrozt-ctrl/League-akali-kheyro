@@ -3,7 +3,7 @@
     <div class="queue">
       <IndicatorPulse style="margin-right: 8px" />
       <div class="queue-name">
-        {{ lcs.gameData.queues[data.game.gameQueueConfigId]?.name || data.game.gameQueueConfigId }}
+        {{ formatQueueName(data.game.gameQueueConfigId) }}
       </div>
       <NPopover>
         <template #trigger>
@@ -187,6 +187,7 @@ import { useLeagueClientStore } from '@renderer-shared/shards/league-client/stor
 import { championIconUri, profileIconUri } from '@renderer-shared/shards/league-client/utils'
 import { RiotClientRenderer } from '@renderer-shared/shards/riot-client'
 import { SpectatorData } from '@shared/data-sources/sgp/types'
+import { QUEUE_TYPE_BY_ID } from '@shared/utils/queue-name'
 import {
   CopyAllFilled as CopyAllFilledIcon,
   PlayCircleFilled as PlayCircleFilledIcon
@@ -201,6 +202,14 @@ import IndicatorPulse from './IndicatorPulse.vue'
 
 const { t } = useTranslation()
 const as = useAppCommonStore()
+
+const formatQueueName = (queueId: number) => {
+  const queue = lcs.gameData.queues[queueId]
+  const queueType = QUEUE_TYPE_BY_ID[queueId]
+  return queueType
+    ? t(`queueTypes.${queueType}`, { ns: 'common', defaultValue: queue?.name ?? queueId })
+    : (queue?.name ?? queueId)
+}
 
 const emits = defineEmits<{
   toSummoner: [puuid: string, setCurrent?: boolean]

@@ -27,7 +27,7 @@
         >.
         <a
           target="_blank"
-          :href="`${LEAGUE_AKARI_GITHUB}?tab=readme-ov-file#4-%E5%8F%82%E8%80%83`"
+          :href="`${LEAGUE_AKARI_GITHUB}?tab=readme-ov-file#upstream-and-license`"
           >{{ t('AboutPane.line2') }}</a
         >.
       </div>
@@ -42,6 +42,10 @@
             src="https://img.shields.io/github/stars/kheyrozt-ctrl/League-akali-kheyro"
         /></a>
       </div>
+      <div class="about-para-2">
+        <span style="margin-right: 4px">{{ t('AboutPane.upstream') }}: </span>
+        <a target="_blank" :href="UPSTREAM_LEAGUE_AKARI_GITHUB">League Akari v1.3.7</a>
+      </div>
     </NScrollbar>
     <div class="about-para copyright">
       {{ t('AboutPane.copyright') }}
@@ -52,7 +56,7 @@
 <script setup lang="ts">
 import LeagueAkariSpan from '@renderer-shared/components/LeagueAkariSpan.vue'
 import { useAppCommonStore } from '@renderer-shared/shards/app-common/store'
-import { LEAGUE_AKARI_GITHUB } from '@shared/constants/common'
+import { LEAGUE_AKARI_GITHUB, UPSTREAM_LEAGUE_AKARI_GITHUB } from '@shared/constants/common'
 import { useTranslation } from 'i18next-vue'
 import { NScrollbar, useMessage } from 'naive-ui'
 import { h } from 'vue'

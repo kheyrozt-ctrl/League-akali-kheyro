@@ -109,6 +109,19 @@ OngoingGameTitle:
 
 AppSettings:
   title: Application
+  language:
+    label: Language
+    description: Set the primary language for League Akari
+  localeOptions:
+    zh: Chinese
+    en: English
+  themeColor:
+    label: Theme Color (experimental)
+    description: Theme color for League Akari (debug builds only)
+  themeOptions:
+    default: Follow System
+    light: Light
+    dark: Dark
 
   basic:
     title: Basic
@@ -629,9 +642,10 @@ TaggedPlayers:
 
 AboutPane:
   title: About
-  line1: ' (联盟阿卡林, Version {{version}}) is an open-source software that focuses on providing some additional features to assist the game experience of League of Legends, almost all of its implementations rely on'
+  line1: ' (Version {{version}}) is open-source software that provides additional features to assist the League of Legends experience. Most of its functionality relies on'
   line2: Project Reference
-  copyright: © 2025 Hanxven. This software is open-source and follows the GPL-3.0 license.
+  upstream: Upstream Project
+  copyright: '© 2025 Hanxven. This unofficial fork contains independent modifications and is released under GPL-3.0. No warranty is provided.'
 
 Automation:
   title: Automation
@@ -642,6 +656,7 @@ Automation:
 
 AutoGameflow:
   title: Gameflow
+  secondsPlaceholder: Seconds
 
   autoAcceptEnabled:
     label: Auto-Accept Enabled
@@ -856,6 +871,8 @@ OrderedChampionList:
   searchForChampion: Search for Champion
   edit: Edit
   unselected: Unselected
+  moveUp: Move Up
+  moveDown: Move Down
 
 RankedTable:
   queueType: Queue Type
@@ -931,6 +948,7 @@ SearchSummonerModal:
   exactSearch: 'Performing exact search: Searching for summoner with specified name and tag'
   fuzzySearch: 'Performing fuzzy search: Searching for summoners with specified name'
   getFriendsFailed: Failed to get friend list
+  searchFailed: 'Search failed: {{reason}}'
   showAll: Show All
   clear: Clear
 
@@ -1342,7 +1360,10 @@ Spectate:
       useRememberedInstallLocation: Spectating has started, using the detected client location.
 
     failedNotification:
-      title:
+      title: Spectate
+      description: 'Failed to start spectating: {{reason}}'
+
+  failedToLoadFriends: Unable to load the friends list
 
 MatchHistoryTabs:
   disconnected: Not connected to the client
@@ -2321,3 +2342,45 @@ self-update-renderer:
     unpack-failed: Failed to unpack the archive file
     waiting-for-restart: Updated applied. Restart the application to apply the update
     cancelButton: Cancel
+
+FunnyPricing:
+  title: Choose Your Subscription
+  balance: 'Current Balance:'
+  currency: Akari Coins
+  topUp: Top Up
+  monthly: Akari Coins / month
+  free: Free
+  currentPlan: Current Plan
+  subscribe: Subscribe
+  commonPrivileges:
+    matchHistory: Match history and region lookup
+    playerLookup: Player ID lookup
+    gameAnalysis: Match analysis
+    spectate: Spectate players
+    automation: Automatic champion pick/ban and game flow actions (accept, queue, honor, return to lobby, and more)
+    toolkit: Tools including profile background changes and rank display disguises
+  plans:
+    basic:
+      title: Basic
+      description: The most affordable choice!
+    pro:
+      title: ⭐ Pro
+      description: A favorite among power users!
+      bonus: Spend 30 more Akari Coins
+    max:
+      title: ⭐ Max
+      description: Everything you could ever need!
+      bonus: Spend 30 more Akari Coins
+      bonus2: Spend another 168 Akari Coins
+  praise:
+    great: Amazing!
+    nice: Nice!
+
+FunnyAppLogo:
+  subscriptions:
+    basic: Basic
+    pro: ⭐ Pro
+    max: ⭐ Max
+  basicPurchased: 'Keeping it simple—you are now a {{plan}} user.'
+  purchased: 'Congratulations on purchasing {{plan}}. You are now a distinguished {{plan}} user!'
+  notEnough: 'Insufficient balance. You need {{price}} Akari Coins.'

@@ -307,6 +307,7 @@ import { formatI18nOrdinal } from '@shared/i18n'
 import { Game, ParticipantIdentity } from '@shared/types/league-client/match-history'
 import { ReplayMetadata } from '@shared/types/league-client/replays'
 import { summonerName } from '@shared/utils/name'
+import { QUEUE_TYPE_BY_ID } from '@shared/utils/queue-name'
 import { ChevronDown as ChevronDownIcon, List as ListIcon } from '@vicons/ionicons5'
 import { createReusableTemplate, useTimeoutPoll } from '@vueuse/core'
 import dayjs from 'dayjs'
@@ -473,9 +474,16 @@ const composedResultClass = computed(() => {
 })
 
 const formattedModeText = computed(() => {
+  const queue = lcs.gameData.queues[props.game.queueId]
+  const queueType = QUEUE_TYPE_BY_ID[props.game.queueId]
   return props.game.gameMode === 'PRACTICETOOL'
     ? t('MatchHistoryCard.practiceTool')
-    : (lcs.gameData.queues[props.game.queueId]?.name ?? props.game.queueId)
+    : queueType
+      ? t(`queueTypes.${queueType}`, {
+          ns: 'common',
+          defaultValue: queue?.name ?? props.game.queueId
+        })
+      : (queue?.name ?? props.game.queueId)
 })
 
 const isModalShow = ref(false)

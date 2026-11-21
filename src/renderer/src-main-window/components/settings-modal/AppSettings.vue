@@ -20,8 +20,8 @@
       </ControlItem>
       <ControlItem
         class="control-item-margin"
-        label="语言 / Language"
-        label-description="设置应用的主语言 / Set primary language for League Akari"
+        :label="t('AppSettings.language.label')"
+        :label-description="t('AppSettings.language.description')"
         :label-width="400"
       >
         <NSelect
@@ -35,8 +35,8 @@
       <ControlItem
         v-if="as.settings.isInKyokoMode"
         class="control-item-margin"
-        label="Theme Color (experimental)"
-        label-description="Theme color for League Akari (!!DEBUG ONLY!!)"
+        :label="t('AppSettings.themeColor.label')"
+        :label-description="t('AppSettings.themeColor.description')"
         :label-width="400"
       >
         <NSelect
@@ -522,16 +522,16 @@ const remoteConfigSource = [
   { label: 'GitHub', value: 'github' }
 ]
 
-const locales = [
-  { label: '中文', value: 'zh-CN' },
-  { label: 'English', value: 'en' }
-]
+const locales = computed(() => [
+  { label: t('AppSettings.localeOptions.zh'), value: 'zh-CN' },
+  { label: t('AppSettings.localeOptions.en'), value: 'en' }
+])
 
-const themes = [
-  { label: '跟随系统', value: 'default' },
-  { label: '亮色', value: 'light' },
-  { label: '暗色', value: 'dark' }
-]
+const themes = computed(() => [
+  { label: t('AppSettings.themeOptions.default'), value: 'default' },
+  { label: t('AppSettings.themeOptions.light'), value: 'light' },
+  { label: t('AppSettings.themeOptions.dark'), value: 'dark' }
+])
 
 const logLevels = [
   { label: 'Info', value: 'info' },
@@ -542,7 +542,7 @@ const logLevels = [
 
 const backgroundMaterials = computed(() => {
   return [
-    { label: '默认', value: 'none' },
+    { label: t('AppSettings.basic.backgroundMaterial.options.none'), value: 'none' },
     { label: 'Mica', value: 'mica', disabled: !wms.supportsMica }
   ]
 })

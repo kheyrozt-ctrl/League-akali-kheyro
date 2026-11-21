@@ -1,5 +1,12 @@
 # vx.x.x
 
+## Fork changes (2026-11-21)
+
+- This unofficial fork is based on League Akari v1.3.7 and is maintained separately from the upstream project.
+- Added OP.GG draft-assistant improvements, including tier filters, counter-game thresholds, win-rate and game-count display, and exclusion of banned or already selected champions.
+- Completed the English and Chinese renderer/common translation key sets and routed user-visible queue names through the selected application language.
+- Added upstream provenance, GPL-3.0 distribution guidance, and third-party notice documentation.
+
 ## 修复
 
 - 修复了设置文件的导入逻辑。
