@@ -1978,7 +1978,8 @@ Opgg:
     loadingSynergies: Loading team synergy data...
     noRecommendations: No recommendation data available
     unselected: '{{position}} unselected'
-    recommendationTitle: '{{champion}} win rate {{winRate}}%, mastery {{mastery}}'
+    recommendationTitle: '{{champion}} win rate {{winRate}}%, mastery {{mastery}}, {{games}} games'
+    matchupGames: '{{games}} games'
     pickRate: 'pick rate {{value}}%'
     phaseBreakdown: 'Early {{early}}%, Mid {{mid}}%, Late {{late}}%'
     soloRecommendations: Solo Recommendations

@@ -289,7 +289,8 @@
                   t('Opgg.draft.recommendationTitle', {
                     champion: lcs.gameData.champions[item.championId]?.name || item.championId,
                     winRate: (item.matchupWinRate * 100).toFixed(2),
-                    mastery: item.masteryPoints.toLocaleString()
+                    mastery: item.masteryPoints.toLocaleString(),
+                    games: item.matchupGames.toLocaleString()
                   })
                 "
               >
@@ -325,9 +326,10 @@
                   }"
                   >{{ (item.matchupWinRate * 100).toFixed(1) }}%</span
                 >
-                <span class="mastery-points">{{
-                  formatMasteryPoints(item.masteryPoints)
-                }}</span>
+                <span class="mastery-points">{{ formatMasteryPoints(item.masteryPoints) }}</span>
+                <span class="matchup-games">
+                  {{ t('Opgg.draft.matchupGames', { games: item.matchupGames.toLocaleString() }) }}
+                </span>
               </div>
             </div>
           </div>
@@ -986,6 +988,17 @@ const handleSelectCounterChampion = async (targetChampionId: number) => {
 
   try {
     if (pickAction.isInProgress) {
+      const currentChampionId =
+        pickAction.championId ||
+        session.myTeam.find((player) => player.cellId === selfCellId)?.championId
+
+      // Force the League client's champion grid to discard an earlier manual
+      // selection. Otherwise its Lock In button can submit that stale champion and
+      // overwrite the recommendation selected here.
+      if (currentChampionId && currentChampionId !== targetChampionId) {
+        await lc.api.champSelect.pickOrBan(0, false, 'pick', pickAction.id)
+      }
+
       await lc.api.champSelect.pickOrBan(targetChampionId, false, 'pick', pickAction.id)
     } else {
       await lc.api.champSelect.intentChampion(pickAction.id, targetChampionId)
@@ -1104,6 +1117,7 @@ const regionOptions = computed(() => [
 
 const tierOptions = computed(() => [
   { label: t('Opgg.tiers.all'), value: 'all' },
+  { label: t('Opgg.tiers.ibsg'), value: 'ibsg' },
   { label: t('Opgg.tiers.iron'), value: 'iron' },
   { label: t('Opgg.tiers.bronze'), value: 'bronze' },
   { label: t('Opgg.tiers.silver'), value: 'silver' },
@@ -1112,6 +1126,7 @@ const tierOptions = computed(() => [
   { label: t('Opgg.tiers.emerald'), value: 'emerald' },
   { label: t('Opgg.tiers.diamond'), value: 'diamond' },
   { label: t('Opgg.tiers.master'), value: 'master' },
+  { label: t('Opgg.tiers.master_plus'), value: 'master_plus' },
   { label: t('Opgg.tiers.grandmaster'), value: 'grandmaster' },
   { label: t('Opgg.tiers.challenger'), value: 'challenger' }
 ])
@@ -1223,9 +1238,11 @@ const isChampionAvailableForRecommendation = (championId: number) => {
     return false
   }
 
-  const selectedChampionIds = [...session.myTeam, ...session.theirTeam]
-    .flatMap((p) => [p.championId, p.championPickIntent])
-    .filter((id) => id > 0)
+  const selectedChampionIds = [
+    ...session.myTeam.flatMap((p) => [p.championId, p.championPickIntent]),
+    ...session.theirTeam.flatMap((p) => [p.championId, p.championPickIntent]),
+    ...counterPickEnemies.value.map((enemy) => enemy.championId)
+  ].filter((id) => id > 0)
 
   const bannedChampionIds = [...session.bans.myTeamBans, ...session.bans.theirTeamBans].filter(
     (id) => id > 0
@@ -1246,6 +1263,8 @@ const formatMasteryPoints = (points: number) => {
   return points.toString()
 }
 
+const MIN_COUNTER_GAMES = 50
+
 const toCounterChampionWinRate = (counter: { win?: number; play?: number } | null | undefined) => {
   if (!counter || !counter.play) {
     return 0
@@ -1256,7 +1275,7 @@ const toCounterChampionWinRate = (counter: { win?: number; play?: number } | nul
 
 const POSITION_SLOT_ORDER: PositionType[] = ['top', 'jungle', 'mid', 'adc', 'support']
 
-const counterPickEnemies = computed(() => {
+const liveCounterPickEnemies = useStableComputed(() => {
   if (
     mode.value !== 'ranked' ||
     position.value === 'none' ||
@@ -1269,26 +1288,49 @@ const counterPickEnemies = computed(() => {
 
   const championRows = tierData.value.data as any[]
   const championRowById = new Map<number, any>(championRows.map((row) => [row.id, row]))
-  const enemyChampionIds = [
-    ...new Set(
-      lcs.champSelect.session.theirTeam
-        .map((p) => p.championId || p.championPickIntent)
-        .filter((id) => id > 0)
-    )
-  ]
+  const enemySelections = new Map<
+    number,
+    { championId: number; assignedPosition: string | undefined }
+  >()
 
-  return enemyChampionIds
-    .map((championId) => {
+  lcs.champSelect.session.theirTeam.forEach((player) => {
+    const championId = player.championId || player.championPickIntent
+
+    if (championId > 0 && !enemySelections.has(championId)) {
+      enemySelections.set(championId, {
+        championId,
+        assignedPosition: player.assignedPosition
+      })
+    }
+  })
+
+  return [...enemySelections.values()]
+    .map((selection) => {
+      const { championId } = selection
       const row = championRowById.get(championId)
       const positionData = getPositionData(row, position.value)
 
       return {
+        ...selection,
         championId,
         pickRate: positionData?.stats?.pick_rate || 0
       }
     })
     .toSorted((a, b) => b.pickRate - a.pickRate)
 })
+
+const counterPickEnemies = shallowRef<typeof liveCounterPickEnemies.value>([])
+
+// Champion intents can bounce several times while an opponent browses the grid.
+// Only publish a settled snapshot to the draft UI so icons, matchup cards and
+// recommendation filters do not repeatedly tear down and rebuild.
+watchDebounced(
+  liveCounterPickEnemies,
+  (enemies) => {
+    counterPickEnemies.value = enemies
+  },
+  { debounce: 250, maxWait: 600, immediate: true }
+)
 
 const enemyChampionSlots = computed(() => {
   const sortedEnemies = counterPickEnemies.value
@@ -1366,15 +1408,15 @@ const botLanePartner = computed(() => {
 })
 
 const enemyBotLanePeer = computed(() => {
-  const session = lcs.champSelect.session
-
-  if (!session || (position.value !== 'adc' && position.value !== 'support')) {
+  if (!lcs.champSelect.session || (position.value !== 'adc' && position.value !== 'support')) {
     return null
   }
 
   const targetAssignedPosition = position.value === 'adc' ? 'bottom' : 'utility'
-  const peer = session.theirTeam.find((player) => player.assignedPosition === targetAssignedPosition)
-  const championId = peer?.championId || peer?.championPickIntent || 0
+  const peer = counterPickEnemies.value.find(
+    (enemy) => enemy.assignedPosition === targetAssignedPosition
+  )
+  const championId = peer?.championId || 0
 
   if (!peer || championId <= 0) {
     return null
@@ -1461,11 +1503,11 @@ const selectedEnemyChampionsForPhase = computed(() => {
     return []
   }
 
-  return session.theirTeam
-    .map((player) => {
-      const championId = player.championId || player.championPickIntent || 0
+  return counterPickEnemies.value
+    .map((enemy) => {
+      const championId = enemy.championId
       const championPosition =
-        toPositionTypeFromAssignedPosition(player.assignedPosition) ||
+        toPositionTypeFromAssignedPosition(enemy.assignedPosition) ||
         inferChampionPrimaryPosition(championId)
 
       if (championId <= 0 || !championPosition) {
@@ -1826,7 +1868,11 @@ const counterPickContext = computed(() => {
         masteryPoints: mastery?.championPoints || 0
       }
     })
-    .filter((item) => item.matchupGames > 0)
+    .filter(
+      (item) =>
+        item.matchupGames >= MIN_COUNTER_GAMES &&
+        isChampionAvailableForRecommendation(item.championId)
+    )
 
   const detailedCounters =
     targetEnemyCounterDetails.value?.enemyChampionId === targetEnemy.championId
@@ -1849,7 +1895,11 @@ const counterPickContext = computed(() => {
         masteryPoints: mastery?.championPoints || 0
       }
     })
-    .filter((item) => item.matchupGames > 0)
+    .filter(
+      (item) =>
+        item.matchupGames >= MIN_COUNTER_GAMES &&
+        isChampionAvailableForRecommendation(item.championId)
+    )
     .toSorted((a, b) => {
       if (b.matchupWinRate !== a.matchupWinRate) {
         return b.matchupWinRate - a.matchupWinRate
@@ -1917,7 +1967,7 @@ const counterPickContext = computed(() => {
 
               return b.matchupWinRate - a.matchupWinRate
             })
-        : rankedCounters
+        : pickableCounters
   ).slice(0, 6)
 
   return {
@@ -2054,7 +2104,6 @@ watch(
     ] as const,
   async ([targetEnemyChampionId]) => {
     loadTargetEnemyCounterController?.abort()
-    targetEnemyCounterDetails.value = null
     isLoadingTargetEnemyCounters.value = false
 
     if (
@@ -2063,6 +2112,7 @@ watch(
       position.value === 'none' ||
       position.value === 'all'
     ) {
+      targetEnemyCounterDetails.value = null
       return
     }
 
@@ -2261,11 +2311,11 @@ watch(
     ] as const,
   async () => {
     loadEnemyPhaseController?.abort()
-    enemyPhaseChampionDetails.value = []
 
     const champions = selectedEnemyChampionsForPhase.value
 
     if (!champions.length || mode.value !== 'ranked') {
+      enemyPhaseChampionDetails.value = []
       return
     }
 
@@ -3250,7 +3300,7 @@ watch(
   }
 
   .recommendation-item {
-    grid-template-columns: 24px minmax(44px, 1fr) 42px 42px;
+    grid-template-columns: 24px minmax(44px, 1fr) 42px 42px 44px;
     padding: 0 5px;
     cursor: pointer;
     transition:
@@ -3263,7 +3313,7 @@ watch(
     }
 
     &.duo {
-      grid-template-columns: 36px minmax(44px, 1fr) 42px 42px;
+      grid-template-columns: 36px minmax(44px, 1fr) 42px 42px 44px;
     }
   }
 
@@ -3309,7 +3359,8 @@ watch(
   }
 
   .pick-rate,
-  .mastery-points {
+  .mastery-points,
+  .matchup-games {
     text-align: right;
     font-size: 11px;
     color: #aeb4bc;

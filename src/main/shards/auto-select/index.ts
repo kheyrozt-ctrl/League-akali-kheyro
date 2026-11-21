@@ -98,6 +98,21 @@ export class AutoSelectMain implements IAkariShardInitDispose {
         `Now picking: ${this._lc.data.gameData.champions[championId]?.name || championId}, ${this.settings.pickStrategy}, actionId=${actionId}, locked=${completed}`
       )
 
+      const currentAction = this.state.champSelectActionInfo?.pick.find(
+        (action) => action.id === actionId
+      )
+      const currentChampionId =
+        currentAction?.championId || this.state.champSelectActionInfo?.memberMe.championId
+
+      // The League client keeps its own grid selection in addition to the LCU action.
+      // Replacing an already hovered champion in a single PATCH can leave that local
+      // selection stale, so clicking "Lock In" sends the previous champion back.
+      // Clearing the hover first makes the client consume the following selection as
+      // a fresh one and keeps its confirmation payload in sync with the action.
+      if (!completed && currentChampionId && currentChampionId !== championId) {
+        await this._lc.api.champSelect.pickOrBan(0, false, 'pick', actionId)
+      }
+
       await this._lc.api.champSelect.pickOrBan(championId, completed, 'pick', actionId)
     } catch (error) {
       this._ipc.sendEvent(AutoSelectMain.id, 'error-pick', championId)
