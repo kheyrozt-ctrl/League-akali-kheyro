@@ -2003,7 +2003,7 @@ Opgg:
     loadingSynergies: 正在加载团队组合数据...
     noRecommendations: 暂无可用推荐数据
     unselected: '{{position}} 未选择'
-    recommendationTitle: '{{champion}} 胜率 {{winRate}}%, 熟练度 {{mastery}}, {{games}} 局'
+    recommendationTitle: '{{champion}} 胜率 {{winRate}}%, {{games}} 局'
     matchupGames: '{{games}} 局'
     pickRate: 'pick rate {{value}}%'
     phaseBreakdown: '前期 {{early}}%, 中期 {{mid}}%, 后期 {{late}}%'

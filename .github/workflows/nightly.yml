@@ -21,7 +21,10 @@ jobs:
 
       # Pre build
       - name: Get 7-digit commit SHA
-        run: echo "SHORT_SHA=$("${{ github.sha }}" | cut -c1-7)" >> $env:GITHUB_ENV
+        shell: pwsh
+        run: |
+          $shortSha = "${{ github.sha }}".Substring(0, 7)
+          "SHORT_SHA=$shortSha" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Insert SHA to version string
         run: |
@@ -43,9 +46,15 @@ jobs:
 
       # Build
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
+
+      - name: Enable repository Yarn
+        shell: pwsh
+        run: |
+          corepack enable
+          yarn --version
 
       - name: Validate GitHub Packages auth
         shell: pwsh
@@ -57,14 +66,12 @@ jobs:
           yarn npm whoami --scope leagueakari
 
       - name: Run yarn install
-        uses: borales/actions-yarn@v5.0.0
-        with:
-          cmd: install
+        shell: pwsh
+        run: yarn install --immutable
 
       - name: Run yarn build:win
-        uses: borales/actions-yarn@v5.0.0
-        with:
-          cmd: build:win
+        shell: pwsh
+        run: yarn build:win
 
       # Post build
       - name: Upload build outputs

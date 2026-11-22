@@ -289,7 +289,6 @@
                   t('Opgg.draft.recommendationTitle', {
                     champion: lcs.gameData.champions[item.championId]?.name || item.championId,
                     winRate: (item.matchupWinRate * 100).toFixed(2),
-                    mastery: item.masteryPoints.toLocaleString(),
                     games: item.matchupGames.toLocaleString()
                   })
                 "
@@ -326,7 +325,6 @@
                   }"
                   >{{ (item.matchupWinRate * 100).toFixed(1) }}%</span
                 >
-                <span class="mastery-points">{{ formatMasteryPoints(item.masteryPoints) }}</span>
                 <span class="matchup-games">
                   {{ t('Opgg.draft.matchupGames', { games: item.matchupGames.toLocaleString() }) }}
                 </span>
@@ -1249,18 +1247,6 @@ const isChampionAvailableForRecommendation = (championId: number) => {
   )
 
   return !selectedChampionIds.includes(championId) && !bannedChampionIds.includes(championId)
-}
-
-const formatMasteryPoints = (points: number) => {
-  if (points >= 100000) {
-    return `${Math.round(points / 1000)}k`
-  }
-
-  if (points >= 10000) {
-    return `${(points / 1000).toFixed(1)}k`
-  }
-
-  return points.toString()
 }
 
 const MIN_COUNTER_GAMES = 50
@@ -3359,7 +3345,6 @@ watch(
   }
 
   .pick-rate,
-  .mastery-points,
   .matchup-games {
     text-align: right;
     font-size: 11px;
