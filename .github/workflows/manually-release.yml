@@ -16,7 +16,7 @@ jobs:
   build-release:
     runs-on: windows-latest # Windows Server 2022 runner
     env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN || github.token }}
     timeout-minutes: 180
 
     steps:
@@ -41,7 +41,7 @@ jobs:
         shell: pwsh
         run: |
           if ([string]::IsNullOrWhiteSpace($env:NODE_AUTH_TOKEN)) {
-            Write-Error "NPM_AUTH_TOKEN secret is missing."
+            Write-Error "No GitHub Packages authentication token is available."
             exit 1
           }
           yarn npm whoami --scope leagueakari
